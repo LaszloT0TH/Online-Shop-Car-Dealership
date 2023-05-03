@@ -1,0 +1,90 @@
+﻿@model LoginViewModel
+
+@{
+    ViewBag.Title = "User Login";
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <h1>@*EN*@
+            @*Local Account Login*@
+            @*GE*@
+            Lokale Kontoanmeldung
+            @*HU*@
+            @*Helyi fiók bejelentkezés*@
+        </h1>
+        <hr />
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label asp-for="RememberMe">
+                        <input asp-for="RememberMe" />
+                        @Html.DisplayNameFor(m => m.RememberMe)
+                    </label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+            <div>
+                <a asp-action="ForgotPassword">Forgot Password?</a>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <h1>External Login</h1>
+        <hr />
+        @{
+            if (Model.ExternalLogins.Count == 0)
+            {
+                <div>No external logins configured</div>
+            }
+            else
+            {
+                <form method="post" asp-action="ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl">
+                    <div>
+                        @*EN*@
+                        @*We are looping through each external login provider we have in Model.ExternalLogins
+                        For each external login provider a submit button is dynamically generated
+                        This submit button is inside a form. The form method attribute value is post and asp-action attribute value is ExternalLogin
+                        So when the submit button is clicked the form is posted to ExternalLogin action in AccountController
+                        The login provider is Google, so in the foreach loop, provider.Name returns Google.
+                        Since the button name is set to provider, asp.net core model binding maps the provider name which is Google to provider parameter on the ExternalLogin action.*@
+                        @*GE*@
+                         @*Wir durchlaufen jeden externen Anmeldeanbieter, den wir in Model.ExternalLogins haben
+                         Für jeden externen Login-Anbieter wird dynamisch ein Submit-Button generiert
+                         Diese Senden-Schaltfläche befindet sich in einem Formular. Der Attributwert der Formularmethode ist post und der Attributwert asp-action ist ExternalLogin
+                         Wenn also auf die Schaltfläche „Senden“ geklickt wird, wird das Formular an die ExternalLogin-Aktion in AccountController gesendet
+                         Der Login-Provider ist Google, also gibt provider.Name in der foreach-Schleife Google zurück.
+                         Da der Schaltflächenname auf Anbieter festgelegt ist, ordnet die Kernmodellbindung von asp.net den Anbieternamen, der Google ist, dem Anbieterparameter der ExternalLogin-Aktion zu.*@
+                        @*HU*@
+                        @*A Model.ExternalLogins szolgáltatásban található minden külső bejelentkezési szolgáltatón keresztül keresünk
+                        Minden külső bejelentkezési szolgáltatóhoz dinamikusan generál egy küldés gombot
+                        Jelenleg csak egy külső identitásszolgáltatónk van konfigurálva, ez a Google, így egy Submit gombot kapunk.
+                        Ez a küldés gomb egy űrlapon belül található. Az űrlapmetódus attribútumának értéke post, az asp-action attribútum értéke pedig ExternalLogin
+                        Tehát amikor a küldés gombra kattint, az űrlap elküldésre kerül az ExternalLogin művelethez az AccountControllerben
+                        A bejelentkezési szolgáltató a Google, tehát a foreach ciklusban a provider.Name a Google-t adja vissza.
+                        Mivel a gomb neve szolgáltatóra van állítva, az asp.net alapmodell-kötés leképezi a szolgáltató nevét, amely a Google és a szolgáltató paraméter az ExternalLogin műveletben.*@
+                        @foreach (var provider in Model.ExternalLogins)
+                        {
+                            <button type="submit" class="btn btn-primary" style="width:auto"
+                                    name="provider" value="@provider.Name"
+                                    title="Log in using your @provider.DisplayName account">
+                                @provider.DisplayName
+                            </button>
+                        }
+                    </div>
+                </form>
+            }
+        }
+    </div>
+</div>

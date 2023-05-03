@@ -1,0 +1,107 @@
+﻿@model IEnumerable<ApplicationUser>
+
+@{
+    ViewBag.Title = "All Users";
+}
+
+<h1>@*All Users*@Alle Benutzer</h1>
+
+@if (Model.Any())
+{
+    <a asp-action="Register" asp-controller="Account"
+       class="btn btn-primary mb-3" style="width:auto">
+        Add new user
+    </a>
+
+    foreach (var user in Model)
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                User Id : @user.Id
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">@user.UserName</h5>
+            </div>
+            @*EN*@
+            @*Delete button type is set to submit
+            It is placed inside the form element and the method attribute is set to post
+            So when the Delete button is clicked a POST request is issued to DeleteUser() 
+            action passing it the ID of the user to delete*@
+            @*GE*@
+            @*Schaltflächentyp „Löschen“ ist auf „Senden“ eingestellt
+            Es wird innerhalb des form-Elements platziert und das method-Attribut wird auf post gesetzt
+            Wenn also auf die Schaltfläche Löschen geklickt wird, wird eine POST-Anfrage an DeleteUser() ausgegeben.
+            Aktion, die die ID des zu löschenden Benutzers übergibt*@
+            @*A törlés gomb típusa elküldésre van beállítva
+            A form elem belsejébe kerül, és a method attribútum bejegyzésre van állítva
+            Tehát a Törlés gombra kattintva egy POST kérés érkezik a DeleteUser() művelethez, 
+            amely átadja neki a felhasználó azonosítóját a delete-nek
+            Képzelje csak el, mi történhet, ha egy rosszindulatú e-mailben van egy képcímke, amint az alább látható. Abban a pillanatban, 
+            amikor megnyitjuk az e-mailt, a kép megpróbál betölteni és kiadni egy GET kérést, amely törli az adatokat.
+            <img src="http://localhost/Administration/DeleteUser/123" />
+            Továbbá, amikor a keresőmotorok indexelik az oldalt, GET kérést adnak ki, amely törli az adatokat. 
+            Általánosságban elmondható, hogy a GET kérésnek mentesnek kell lennie minden mellékhatástól,
+            ami azt jelenti, hogy nem változtathatja meg az állapotot a kiszolgálón. 
+            A törléseket mindig POST kéréssel kell végrehajtani.*@            
+            <div class="card-footer">
+                <form method="post" asp-action="DeleteUser" asp-route-id="@user.Id">
+                    <a asp-action="EditUser" asp-controller="Administration"
+                        asp-route-id="@user.Id" class="btn btn-primary">Edit</a>
+
+                    @*<button type="submit" class="btn btn-danger">Delete</button>*@
+
+                    @*EN*@
+                    @*The span elements that surround the Delete, Yes and No buttons will be dynamically 
+                    generated for every user on the list page.
+                    If you have more than one user on the page there will be more than one span element
+                    To ensure these span elements have unique ID's we are appending User.Id which 
+                    is a Guid and guaranteed to be unique*@
+                    @*GE*@
+                     @*Die span-Elemente, die die Schaltflächen „Löschen“, „Ja“ und „Nein“ umgeben, sind dynamisch
+                     für jeden Benutzer auf der Listenseite generiert.
+                     Wenn Sie mehr als einen Benutzer auf der Seite haben, gibt es mehr als ein span-Element
+                     Um sicherzustellen, dass diese Span-Elemente eindeutige IDs haben, hängen wir User.Id which an
+                     ist ein Guid und garantiert einzigartig*@
+                    @*HU*@
+                    @*A Törlés, Igen és Nem gombokat körülvevő span elemek dinamikusak lesznek
+                     a listaoldal minden felhasználója számára generálva.
+                     Ha egynél több felhasználója van az oldalon, akkor egynél több span elem lesz
+                     Annak érdekében, hogy ezek a span elemek egyedi azonosítóval rendelkezzenek, hozzáfűzzük a User.Id-t, amelyik
+                     egy útmutató, és garantáltan egyedi*@
+                    <span id="confirmDeleteSpan_@user.Id" style="display:none">
+                        <span>Are you sure you want to delete?</span>
+                        <button type="submit" class="btn btn-danger">Yes</button>
+                        <a href="#" class="btn btn-primary"
+                            onclick="confirmDelete('@user.Id', false)">No</a>
+                    </span>
+
+                    <span id="deleteSpan_@user.Id">
+                        <a href="#" class="btn btn-danger"
+                            onclick="confirmDelete('@user.Id', true)">Delete</a>
+                    </span>
+                </form>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="card">
+        <div class="card-header">
+            No users created yet
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">
+                Use the button below to create a user
+            </h5>
+            <a class="btn btn-primary" style="width:auto"
+               asp-controller="Account" asp-action="Register">
+                Add new user
+            </a>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script src="~/js/site.js"></script>
+}

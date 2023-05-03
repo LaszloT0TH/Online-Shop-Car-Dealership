@@ -1,0 +1,84 @@
+﻿@model ErrorViewModel
+
+@{
+    ViewData["Title"] = "Error";
+}
+
+@*EN*@
+@*There is no error specific information, if the ErrorTitle property on the ViewBag is null. 
+So just display the generic error message. Else, display the error specific data that is 
+present in ErrorTitle and ErrorMessage properties on the ViewBag object.*@
+@*DE*@
+@*Es gibt keine fehlerspezifischen Informationen, wenn die ErrorTitle-Eigenschaft auf dem ViewBag null ist.
+Zeigen Sie also einfach die allgemeine Fehlermeldung an. Zeigen Sie andernfalls die fehlerspezifischen Daten an
+in den Eigenschaften ErrorTitle und ErrorMessage des ViewBag-Objekts vorhanden.*@
+@*HU*@
+@*Nincs hibaspecifikus információ, ha a ViewBag ErrorTitle tulajdonsága null. 
+Tehát csak jelenítse meg az általános hibaüzenetet. Ellenkező esetben jelenítse meg a V
+iewBag objektum ErrorTitle és ErrorMessage tulajdonságaiban található hibaspecifikus adatokat.*@
+@if (ViewBag.ErrorTitle == null)
+{
+    <h3>
+        @*EN*@
+       @* An occured while processing your request.
+        The support team is notified and we are working on the fix*@
+        @*GE*@
+        Bei der Bearbeitung Ihrer Anfrage ist ein Fehler aufgetreten.
+        Das Support-Team wurde benachrichtigt und wir arbeiten an der Lösung
+        @*HU*@
+        @* Egy történt a kérésed feldolgozása közben.
+        A támogatási csapat értesítést kap, és dolgozunk a javításon*@    
+    </h3>
+    <h5>
+        @*EN*@
+        @*Please contact us on laszlototh@gmail.com*@
+        @*GE*@
+        Bitte kontaktieren Sie uns unter laszlototh@gmail.com
+        @*HU*@
+        @*Kérjük, vegye fel velünk a kapcsolatot a laszlototh@gmail.com címen*@ 
+    </h5>
+}
+else
+{
+    <h1 class="text-danger">@ViewBag.ErrorTitle</h1>
+    <h6 class="text-danger">@ViewBag.ErrorMessage</h6>
+}
+
+
+
+@*<h1 class="text-danger">Error.</h1>
+<h2 class="text-danger">An error occurred while processing your request.</h2>
+
+@if (Model.ShowRequestId)
+{
+    <p>
+        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+    </p>
+}
+
+<h3>Development Mode</h3>
+<p>
+    EN
+    Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
+    GE
+    Beim Wechseln zur <strong>Entwicklungsumgebung</strong> werden detailliertere Informationen über den aufgetretenen Fehler angezeigt.
+    HU
+    A <strong>Fejlesztési</strong> környezetre váltás részletesebb információkat jelenít meg a felmerült hibáról.
+</p>
+<p>
+    EN
+    <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
+    It can result in displaying sensitive information from exceptions to end users.
+    For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
+    and restarting the app.
+    GE
+    <strong>Die Entwicklungsumgebung sollte nicht für bereitgestellte Anwendungen aktiviert werden.</strong>
+     Dies kann dazu führen, dass sensible Informationen von Ausnahmen für Endbenutzer angezeigt werden.
+     Aktivieren Sie für das lokale Debugging die Umgebung <strong>Entwicklung</strong>, indem Sie die Umgebungsvariable <strong>ASPNETCORE_ENVIRONMENT</strong> auf <strong>Entwicklung</strong> setzen
+     und Neustart der App.
+     HU
+<strong>A fejlesztői környezetet nem szabad engedélyezni a telepített alkalmazásokhoz.</strong>
+     Ez azt eredményezheti, hogy a kivételektől származó érzékeny információk megjelennek a végfelhasználók számára.
+     A helyi hibakereséshez engedélyezze a <strong>Fejlesztési</strong> környezetet úgy, hogy az <strong>ASPNETCORE_ENVIRONMENT</strong> környezeti változót <strong>Fejlesztés</strong> értékre állítja.
+     és indítsa újra az alkalmazást.
+</p>*@

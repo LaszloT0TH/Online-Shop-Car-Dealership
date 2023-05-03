@@ -1,0 +1,169 @@
+﻿@model IEnumerable<CarModel>
+
+@{ 
+    @ViewData["Title"]
+    // Cars
+}
+
+<h1>Autos</h1>
+
+<br />
+<h2>Autos Liste</h2>
+
+@*@if ((await authorizationService.AuthorizeAsync(User, "CreateRolePolicy")).Succeeded)
+{
+    <a asp-controller="Car" asp-action="Create" class='btn btn-primary btn-sm'>Create Auto</a>
+
+}*@      
+@{ 
+    // Customer View 
+}
+@if ((!User.IsInRole("Admin")) || 
+    (!User.IsInRole("Manager")) ||
+    (!User.IsInRole("Salesperson")) )
+{
+    <div class="container-fluid bg-trasparent my-4 p-3" style="position: relative">
+          <div class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-4 g-3">
+                @foreach (var car in Model)
+                {
+                    if (!car.Sold)
+                    {
+                        // EN
+                        // path, if there is no image, "noimage.jpg" should be displayed
+                        // GE
+                        // Pfad, wenn kein Bild vorhanden ist, sollte "noimage.jpg" angezeigt werden
+                        // HU
+                        // elérési út, ha nincs kép akkor a "noimage.jpg" jelenjen meg
+                        var photoPath = "~/images/" + (car.PhotoPath ?? "noimage.jpg");
+                        <div class="col hp">
+                            <div class="card h-100 shadow-sm" >
+                            <a asp-controller="Car" asp-action="Details" asp-route-id="@car.Id">
+                                <img class="card-img-top" src="@photoPath" asp-append-version="true"/>
+                            </a>
+
+                            <div class="label-top shadow-sm">
+                                <a class="text-white">@car.Model</a>
+                            </div>
+                            <div class="label-top shadow-sm">
+                                <a class="text-white">@car.Color</a>
+                            </div>
+                            <div class="card-body">
+                                <div class="clearfix mb-3">
+                                <span class="float-start badge rounded-pill bg-success">€ @Convert.ToDouble(car.NettoPrice).ToString("0.##")</span>
+
+                                <span class="float-end">
+                                    <a class="small text-muted text-uppercase aff-link" asp-controller="Car" asp-action="Details" class='btn btn-outline-info' asp-route-id="@car.Id"><i class="bi bi-eye"></i>Details</a>
+                                </span>
+                                </div>
+                                <h5 class="card-title">
+                                <a target="_blank">@car.Model</a>
+                                </h5>
+
+    @*                            <div class="d-grid gap-2 my-4">
+
+                                    <a asp-controller="ShoppingCart" asp-action="AddItemToShoppingCart" class="btn btn-success text-white" asp-route-id="@car.Id">
+                                        <i class="bi bi-cart-plus"></i>In den Einkaufswagen</a>
+
+                                </div>*@
+                                <div class="clearfix mb-1">
+
+                                <span class="float-start"><a href="#"><i class="fas fa-question-circle"></i></a></span>
+
+                                <span class="float-end">
+                                    <i class="far fa-heart" style="cursor: pointer"></i>
+
+                                </span>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    }
+                }
+          </div>
+    </div>
+}
+    
+@*Salesperson & Manager & Admin View*@ 
+@if((User.Identity.IsAuthenticated && User.IsInRole("Admin")) || 
+    (User.Identity.IsAuthenticated && User.IsInRole("Manager")) ||
+    (User.Identity.IsAuthenticated && User.IsInRole("Salesperson")) )
+{
+    <a asp-controller="Car" asp-action="Create" class='btn btn-primary btn-sm'>Create neue Auto</a>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                @if ((User.Identity.IsAuthenticated && User.IsInRole("Admin"))) // only Admin
+                {
+                    <th>@Html.DisplayNameFor(model => model.Id)</th>
+                }
+                <th>@Html.DisplayNameFor(model => model.Model)</th>
+                <th>@Html.DisplayNameFor(model => model.Color)</th>
+                <th>@Html.DisplayNameFor(model => model.NumberOfSeats)</th>
+                <th>@Html.DisplayNameFor(model => model.YearOfProduction)</th> 
+                <th>@Html.DisplayNameFor(model => model.Fuels.FuelName)</th>
+                <th>@Html.DisplayNameFor(model => model.Gearbox.GearboxName)</th>
+                <th>@Html.DisplayNameFor(model => model.CubicCapacity)</th>
+                <th>@Html.DisplayNameFor(model => model.Mileage)</th>
+                <th>@Html.DisplayNameFor(model => model.ChassisNumber)</th>
+                <th>@Html.DisplayNameFor(model => model.EnginePower)</th>
+                <th>@Html.DisplayNameFor(model => model.OwnWeight)</th>
+                <th>@Html.DisplayNameFor(model => model.Sold)</th>
+                <th>@Html.DisplayNameFor(model => model.NettoPrice)</th>
+                <th>@Html.DisplayNameFor(model => model.LastUpdateTime)</th>
+                <th>@Html.DisplayNameFor(model => model.PhotoPath)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var car in Model)
+            {
+                <tr>
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin")) // only Admin
+                    {
+                        <td>@car.Id</td>
+                    }
+                    <td>@car.Model</td>
+                    <td>@car.Color</td>
+                    <td>@car.NumberOfSeats</td>
+                    <td>@car.YearOfProduction</td>
+                    <td>@car.Fuels.FuelName</td>
+                    <td>@car.Gearbox.GearboxName</td>
+                    <td>@car.CubicCapacity</td>
+                    <td>@car.Mileage</td>
+                    <td>@car.ChassisNumber</td>
+                    <td>@car.EnginePower</td>
+                    <td>@car.OwnWeight</td>
+                    <td>@car.Sold</td>
+                    <td>@Convert.ToDouble(car.NettoPrice).ToString("0.##")</td>
+                    <td>@car.LastUpdateTime.ToString()</td>
+                   @{
+                        // EN
+                        // path, if there is no image, "noimage.jpg" should be displayed
+                        // GE
+                        // Pfad, wenn kein Bild vorhanden ist, sollte "noimage.jpg" angezeigt werden
+                        // HU
+                        // elérési út, ha nincs kép akkor a "noimage.jpg" jelenjen meg
+                        var photoPath = "~/images/" + (car.PhotoPath ?? "noimage.jpg");
+                    }
+                    <td>
+                        <div class="card-body text-center">
+                            <img class="card-img-top" src="@photoPath" asp-append-version="true"/>
+                        </div> 
+                    </td>
+                    <td>     
+                        <a asp-controller="Car" asp-action="Details" class='btn btn-outline-info' asp-route-id="@car.Id"><i class="bi bi-eye"></i>Details</a>
+
+                        @if ((User.Identity.IsAuthenticated && User.IsInRole("Admin")) || (User.Identity.IsAuthenticated && User.IsInRole("Manager")) ) 
+                        {
+                            <a asp-controller="Car" asp-action="Edit" class='btn btn-outline-primary' asp-route-id="@car.Id"><i class="bi bi-pencil-square"></i>Edit</a>
+                        }
+
+                        @*<a asp-controller="ShoppingCart" asp-action="AddItemToShoppingCart" class="btn btn-success text-white" asp-route-id="@car.Id"><i class="bi bi-cart-plus"></i>In den Einkaufswagen</a>*@
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

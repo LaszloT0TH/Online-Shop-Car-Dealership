@@ -1,0 +1,127 @@
+﻿@model CarAccessoriesCreateViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Auto Zubehör</h4>
+<hr />
+<form enctype="multipart/form-data" asp-controller="CarAccessories" asp-action="Create" method="post" class="mt-3">
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="ProductName" class="control-label"></label>
+                    <input asp-for="ProductName" class="form-control" />
+                    <span asp-validation-for="ProductName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CAPGId" class="control-label"></label>
+                    <select asp-for="CAPGId" class="form-control" asp-items="ViewBag.CarAccessoriesProductGroup"></select>
+                    <span asp-validation-for="CAPGId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="QuantityOfStock" class="control-label"></label>
+                    <input asp-for="QuantityOfStock" class="form-control" />
+                    <span asp-validation-for="QuantityOfStock" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MinimumStockQuantity" class="control-label"></label>
+                    <input asp-for="MinimumStockQuantity" class="form-control" />
+                    <span asp-validation-for="MinimumStockQuantity" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="NetSellingPrice" class="control-label"></label>              
+                    <input asp-for="NetSellingPrice" class="form-control" />
+                    <span asp-validation-for="NetSellingPrice" class="text-danger"></span>              
+                </div>
+                <div class="form-group">
+                    <label asp-for="SalesUnit" class="control-label"></label>
+                    <input asp-for="SalesUnit" class="form-control" />
+                    <span asp-validation-for="SalesUnit" class="text-danger"></span>
+                </div>
+               <div class="form-group">
+                    <label asp-for="UnitNameId" class="control-label"></label>
+                    <select asp-for="UnitNameId" class="form-control" asp-items="ViewBag.CarAccessoriesUnit"></select>
+                    <span asp-validation-for="UnitNameId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Brand" class="control-label"></label>
+                    <input asp-for="Brand" class="form-control" />
+                    <span asp-validation-for="Brand" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CreationDate" class="control-label"></label>
+                    <input asp-for="CreationDate" class="form-control" />
+                    <span asp-validation-for="CreationDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Version" class="control-label"></label>
+                    <input asp-for="Version" class="form-control" />
+                    <span asp-validation-for="Version" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LastUpdateTime" class="control-label"></label>
+                    <input asp-for="LastUpdateTime" class="form-control" />
+                    <span asp-validation-for="LastUpdateTime" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Photo" class="control-label"></label>
+                    <div class="col-sm-10">
+                        <div class="custom-file">
+                             <input asp-for="Photo" class="form-control" custom-file-input/>
+                             <label class="custom-file-label">Choose File...</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-outline-success float-right" />
+                    <a class="btn btn-outline-secondary" asp-action="Index">Show All</a>               
+                </div>
+            </form>
+        </div>
+    </div>
+    @*EN*@
+    @*This script is required to display the selected file in the file upload element*@
+    @*GE*@
+    @*Dieses Skript wird benötigt, um die ausgewählte Datei im Datei-Upload-Element anzuzeigen*@
+    @*HU*@
+    @*Ez a szkript szükséges a kiválasztott fájl megjelenítéséhez a fájlfeltöltési elemben*@
+    @section Scripts {
+        <script>
+            $(document).ready(function () {
+                $('.custom-file-input').on("change", function () {
+                    var fileName = $(this).val().split("\\").pop();
+                    $(this).next('.custom-file-label').html(fileName);
+                });
+            });
+        </script>
+    } 
+    @*EN*@
+    @*Updates the uploaded image = displays if loaded from a link*@
+    @*GE*@
+    @*Aktualisiert das hochgeladene Bild = wird angezeigt, wenn es von einem Link geladen wurde*@
+    @*HU*@
+    @*Frissíti a feltöltött képet =  megjeleníti, ha linkről töltjük be*@
+    @*@section Scripts{ 
+    <script>
+
+        $(document).ready(function () {
+            var output = document.getElementById('ProfilePicturePreview');
+            output.src = $("#ProfilePictureURL").val();
+        })
+
+        $("#ProfilePictureURL").on("change", function () {
+            var output = document.getElementById('ProfilePicturePreview');
+            output.src = $(this).val();
+        })
+    </script>*@
+</form>

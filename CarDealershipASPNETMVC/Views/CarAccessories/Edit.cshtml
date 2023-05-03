@@ -1,0 +1,147 @@
+﻿@model CarAccessoriesEditViewModel
+@{   
+    ViewData["Title"] = "Car Accessories Edit";
+    // EN
+    // Get the full path of the existing employee photo for display
+    // GE
+    // Holen Sie sich den vollständigen Pfad des vorhandenen Mitarbeiterfotos zur Anzeige
+    // HU
+    // A meglévő alkalmazotti fénykép teljes elérési útja megjelenítésre
+    var photoPath = "~/images/" + (Model.ExistingPhotoPath ?? "noimage.jpg");
+}
+<br />
+<h2>Edit Auto Zubehör</h2> 
+
+<form  asp-controller="CarAccessories" asp-action="Edit" method="post" enctype="multipart/form-data" class="mt-5">
+    <div asp-validation-summary="All" class="text-danger">
+    </div>
+    @*EN*@
+    @*Use hidden input elements to store  ExistingPhotoPath
+    which we need when we submit the form and update data in the database*@
+    @*GE*@
+    @*Verwenden Sie versteckte Eingabeelemente, um ExistingPhotoPath zu speichern
+    die wir benötigen, wenn wir das Formular absenden und Daten in der Datenbank aktualisieren*@
+    @*HU*@
+    @*Használjon rejtett beviteli elemeket a ExistingPhotoPath tárolásához
+    amire szükségünk van az űrlap elküldésekor és az adatbázisban lévő adatok frissítésekor*@
+    <input hidden asp-for="ExistingPhotoPath" />
+    <div class="form-group">
+        <label asp-for="Id" class="control-label"></label>
+        <input asp-for="Id" class="form-control"  readonly/>
+        <span asp-validation-for="Id" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ProductName" class="control-label"></label>
+        <input asp-for="ProductName" class="form-control" />
+        <span asp-validation-for="ProductName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="CAPGId" class="control-label"></label>
+        <select asp-for="CAPGId" class="form-control" asp-items="ViewBag.CarAccessoriesProductGroup"></select>
+        <span asp-validation-for="CAPGId" class="text-danger"></span>
+    </div> 
+
+    @if (true)
+    {
+        <div class="form-group">
+            <label asp-for="QuantityOfStock" class="control-label"></label>
+            <input asp-for="QuantityOfStock" class="form-control" />
+            <span asp-validation-for="QuantityOfStock" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="MinimumStockQuantity" class="control-label"></label>
+            <input asp-for="MinimumStockQuantity" class="form-control"  />
+            <span asp-validation-for="MinimumStockQuantity" class="text-danger"></span>
+        </div>
+    }
+    else
+    {
+        <div class="form-group">
+            <label asp-for="QuantityOfStock" class="control-label"></label>
+            <input asp-for="QuantityOfStock" class="form-control" readonly/>
+            <span asp-validation-for="QuantityOfStock" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="MinimumStockQuantity" class="control-label"></label>
+            <input asp-for="MinimumStockQuantity" class="form-control" readonly/>
+            <span asp-validation-for="MinimumStockQuantity" class="text-danger"></span>
+        </div>
+    }
+
+    <div class="form-group">
+        <label asp-for="NetSellingPrice" class="control-label"></label>
+        <input asp-for="NetSellingPrice" class="form-control"  />
+        <span asp-validation-for="NetSellingPrice" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="SalesUnit" class="control-label"></label>
+        <input asp-for="SalesUnit" class="form-control"  />
+        <span asp-validation-for="SalesUnit" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="UnitNameId" class="control-label"></label>
+        <select asp-for="UnitNameId" class="form-control" asp-items="ViewBag.CarAccessoriesUnit"></select>
+        <span asp-validation-for="UnitNameId" class="text-danger"></span>
+    </div> 
+    <div class="form-group">
+        <label asp-for="Brand" class="control-label"></label>
+        <input asp-for="Brand" class="form-control"  />
+        <span asp-validation-for="Brand" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="CreationDate" class="control-label"></label>
+        <input asp-for="CreationDate" class="form-control"  />
+        <span asp-validation-for="CreationDate" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Description" class="control-label"></label>
+        <input asp-for="Description" class="form-control"  />
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Version" class="control-label"></label>
+        <input asp-for="Version" class="form-control"  />
+        <span asp-validation-for="Version" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="LastUpdateTime" class="control-label"></label>
+        <input asp-for="LastUpdateTime" class="form-control"  />
+        <span asp-validation-for="LastUpdateTime" class="text-danger"></span>
+    </div>
+    <div class="form-group row">
+        <label asp-for="Photo" class="col-sm-2 col-form-label"></label>
+    </div>
+    <div class="col-sm-10">
+        <div class="custom-file">
+            <input asp-for="Photo" class="custom-file-input form-control">
+            <label class="custom-file-label">Click here to change photo</label>
+        </div>
+    </div>
+
+    @*EN*@
+    @*Display the existing caraccessories photo*@
+    @*GE*@
+    @*Vorhandenes Autozubehörfoto anzeigen*@
+    @*HU*@
+    @*A meglévő alkalmazott megjelenítése fénykép*@
+    <div class="form-group row col-sm-4 offset-4">
+        <img class="imageThumbnail" src="@photoPath" asp-append-version="true" />
+    </div>
+    <div>
+        <button type="submit" class="btn-primary">Submit</button>
+    </div>
+    
+
+    
+    @section Scripts {
+        <script>
+            $(document).ready(function () {
+                $('.custom-file-input').on("change", function () {
+                    var fileName = $(this).val().split("\\").pop();
+                    $(this).next('.custom-file-label').html(fileName);
+                });
+            });
+        </script>
+    }
+</form>

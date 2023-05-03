@@ -1,0 +1,165 @@
+﻿@model IEnumerable<OrderModel>
+
+@{
+    @ViewData["Title"]
+    // Order
+}
+
+<h1>Aufträge</h1>
+
+<br />
+<h2>Aufträge Liste</h2>
+    
+@*Salesperson & Manager & Admin View*@ 
+@if(true)
+{ 
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Auftragsnummer</th>
+                <th>Artikel</th>
+                <th>Verkäufer Id</th>
+                <th>Menge</th>
+                <th>Bestelldatum</th>
+                <th>Bestellstatus</th>
+                <th>Rabatt</th>
+                <th>Versanddatum</th>
+                <th>Netto Verkaufsbetrag</th>
+                <th>Bezahlter Verkaufsbetrag</th>
+                <th>Steuerprozentsatz</th>
+                <th>Brutto Verkaufsbetrag</th>
+                <th>Verkaufszeit</th>
+                <th>Warenkorbstatus</th>
+                @if ((User.Identity.IsAuthenticated && User.IsInRole("Admin")) || (User.Identity.IsAuthenticated && User.IsInRole("Manager")) )
+                {
+                    <th>Benutzer</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                var findResult = order.OrderItems.Select(st => st.OrderStatusId).ToList();
+                int orderStatusId = 0;
+                if (findResult != null) orderStatusId = Convert.ToInt32(findResult[0]);
+
+                <tr>
+                    @if (@order.OrderItems.Count != 0)
+                    {
+                        @*// only Admin*@
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin")) 
+                        {
+                            <td class="align-middle">@order.Id</td>
+                        }
+                        @foreach (var item in order.OrderItems)
+                        {   
+                            <td> 
+                                @if (item.CarAccessoriesId != null)
+                                {
+                                    // only Admin & Manager
+                                    @if ((User.Identity.IsAuthenticated && User.IsInRole("Admin")) || (User.Identity.IsAuthenticated && User.IsInRole("Manager")) )
+                                    {
+                                            <p>@item.CarAccessories.Id</p>
+                                    }
+                                    <p>@item.CarAccessories.ProductName</p>
+                                    @*<p>@item.CarAccessories.QuantityOfStock</p>
+                                    // only Admin & Manager
+                                    @if ((User.Identity.IsAuthenticated && User.IsInRole("Admin")) || (User.Identity.IsAuthenticated && User.IsInRole("Manager")) ) 
+                                    {
+                                        <p>@item.CarAccessories.MinimumStockQuantity</p>
+                                    }
+                                    <p>@item.CarAccessories.NetSellingPrice</p>
+                                    <p>@item.CarAccessories.SalesUnit</p>
+                                    <p>@Convert.ToDouble(@item.CarAccessories.UnitPrice).ToString("0.##")</p>
+                                    <p>@item.CarAccessories.carAccessoriesUnitModel.UnitName</p>
+                                    <p>@item.CarAccessories.LastUpdateTime.ToString()</p>
+                                    <p>@item.CarAccessories.Brand</p>
+                                    <p>@item.CarAccessories.CreationDate.ToString()</p>
+                                    <p>@item.CarAccessories.Description</p>
+                                    <p>@item.CarAccessories.Version</p>*@
+                                }
+
+                                @if (item.CarId != null)
+                                {
+                                    // only Admin & Manager
+                                    @if ((User.Identity.IsAuthenticated && User.IsInRole("Admin")) || (User.Identity.IsAuthenticated && User.IsInRole("Manager")) )
+                                    {
+                                        <p>@item.Cars.Id</p>
+                                    }
+                                    <p>@item.Cars.Model</p>
+                                    <p>@item.Cars.Color</p>
+                                    @*<p>@item.Cars.NumberOfSeats</p>
+                                    <p>@item.Cars.YearOfProduction.ToString()</p>
+                                    <p>@item.Cars.FuelId</p>
+                                    <p>@item.Cars.GearboxId</p>
+                                    <p>@Convert.ToDouble(@item.Cars.CubicCapacity).ToString("0.##")</p>
+                                    <p>@Convert.ToDouble(@item.Cars.Mileage).ToString("0.##")</p>
+                                    <p>@item.Cars.ChassisNumber</p>
+                                    <p>@item.Cars.EnginePower</p>
+                                    <p>@item.Cars.OwnWeight</p>
+                                    <p>@Convert.ToDouble(@item.Cars.NettoPrice).ToString("0.##")</p>
+                                    <p>@item.Cars.LastUpdateTime.ToString()</p>*@
+                                }
+                            </td>
+                            <td>@item.SalesPersonId</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.OrderDate.ToString()</td>
+                            <td>@item.OrderStatus.OrderStatusName</td>
+                            <td>@item.Discount</td>
+                            <td>@item.ShippedDate.ToString()</td>
+                            <td>@Convert.ToDouble(@item.SaleAmount).ToString("0.##")</td>
+                            <td>@Convert.ToDouble(@item.SaleAmountPaid).ToString("0.##")</td>
+                            <td>@Convert.ToDouble(@item.CountryTaxPercentageValue).ToString("0.##")</td>
+                            <td>@Convert.ToDouble(item.SaleAmount * (1 +(item.CountryTaxPercentageValue/100))).ToString("0.##")</td>
+                            <td>@item.SaleTime.ToString()</td>
+                            <td>@item.ShoppingCartStatus.ShoppingCartStatusName</td>
+                        }
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <td class="align-middle"> @order.User.FirstName </td>
+                        }
+                        <td>     
+                            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin") 
+                                && orderStatusId == 1) 
+                            {
+                                // EN
+                                // visibility if OrderStatusId == 1 //Pending
+                                // GE
+                                // Sichtbarkeit if OrderStatusId == 1 //Ausstehend
+                                // HU
+                                // láthatóság, ha OrderStatusId == 1 //Függőben
+                                <a asp-controller="Order" asp-action="Processing" class='btn btn-outline-info' asp-route-id="@order.Id">
+                                    <i class="bi bi-person"></i> Verarbeitung</a>
+                            }
+                            @*// only Admin & Manager*@  
+                            @if ( ((User.Identity.IsAuthenticated && User.IsInRole("Admin")) || (User.Identity.IsAuthenticated && User.IsInRole("Manager"))) 
+                                && orderStatusId == 2)
+                            {
+                                // EN
+                                // visibility if OrderStatusId == 2 //Processing
+                                // GE
+                                // Sichtbarkeit if OrderStatusId == 2 //Verarbeitung
+                                // HU
+                                // láthatóság, ha OrderStatusId == 2 //Feldolgozás alatt
+                                <a asp-controller="Order" asp-action="Rejected" class='btn btn-danger' asp-route-id="@order.Id">
+                                    <i class="bi bi-x"></i> Ablehnen</a>
+
+                                <a asp-controller="Order" asp-action="Completed" class='btn btn-outline-primary' asp-route-id="@order.Id">
+                                    <i class="bi bi-check"></i> Fertig</a>
+                            }
+                        </td>
+                    }
+                    
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+
+
+
+
+
+

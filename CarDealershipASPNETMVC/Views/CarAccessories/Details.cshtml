@@ -1,0 +1,159 @@
+﻿@model CarAccessoriesDetailsViewModel
+
+<html>
+<head>
+    <title></title>
+</head>
+    <body>
+        <h3>@ViewData["Title"]</h3>
+            <div class="row">
+                <div class="col-md-8 offset-2">
+                    <form asp-controller="ShoppingCart" asp-action="AddItemToShoppingCart" asp-route-id="@Model.CarAccessories.Id" method="post"><div asp-validation-summary="All"></div>    
+                        <div class="card mb-12">
+                        <div class="row g-0">
+                            <div class="col-md-12">
+                                <div class="card-header text-white bg-info">
+                                    <p class="card-text">
+                                        <h5 class="card-title">
+                                            @Model.CarAccessories.Description
+                                        </h5>
+                                    </p>
+                                </div>
+                            </div>
+                            @{
+                                // EN
+                                // path, if there is no image, "noimage.jpg" should be displayed
+                                // GE
+                                // Pfad, wenn kein Bild vorhanden ist, sollte "noimage.jpg" angezeigt werden
+                                // HU
+                                // elérési út, ha nincs kép akkor a "noimage.jpg" jelenjen meg
+                                var photoPath = "~/images/" + (Model.CarAccessories.PhotoPath ?? "noimage.jpg");
+                             }
+                            <div class="col-md-4">
+                                <img class="card-img-top" src="@photoPath" asp-append-version="true"/>
+                            </div>
+                            @*<div class="col-md-4">
+                                <img src="@Model.ImageURL" width="100%" alt="@Model.Name">
+                            </div>*@
+
+                            @*<div>
+                                Produkt : @carAccessories.ProductName
+                            </div>*@
+
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <p class="card-text">Produkt Name :  @Model.CarAccessories.ProductName</p>
+                                    <p class="card-text">Produktgruppe : @Model.CarAccessories.carAccessoriesProductGroupModel.CAPGName</p>
+                                    <p class="card-text">Marke : @Model.CarAccessories.Brand</p>
+                                    <p class="card-text">Beschreibung : @Model.CarAccessories.Description</p>
+                                    @if (true)
+                                    {
+                                        <p class="card-text">Lagerbestand : @Model.CarAccessories.QuantityOfStock</p>
+                                        <p class="card-text">Mindestbestandsmenge : @Model.CarAccessories.MinimumStockQuantity</p>
+                                    }
+                                    <p class="card-text">Verkaufspreis : @Model.CarAccessories.NetSellingPrice @Model.CarAccessories.carAccessoriesUnitModel.UnitName</p>
+                                    <p class="card-text">Verkaufseinheit : @Model.CarAccessories.SalesUnit</p>
+                                    <p class="card-text">Einheit Preis : @Model.CarAccessories.UnitPrice €uro</p>
+                                    @if (true)
+                                    {
+                                        <p class="card-text">Letzte Aktualisierungszeit : @Model.CarAccessories.LastUpdateTime</p>                                
+                                        <p class="card-text">Erstellungsdatum : @Model.CarAccessories.CreationDate</p>
+                                        <p class="card-text">Version : @Model.CarAccessories.Version</p>
+                                    }
+                                    <div class="form-group">
+                                        <label asp-for="Quantity" class="control-label"></label>
+                                        <select asp-for="Quantity" class="form-control" asp-items="ViewBag.Quantity"></select>
+                                        <span asp-validation-for="Quantity" class="text-danger"></span>
+                                    </div>
+                                    <div>
+                                        <button type="submit" class="btn btn-success text-white"><i class="bi bi-cart-plus"></i>In den Einkaufswagen</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                    </div>
+                    </div>
+                    </form>    
+                    <div class="col-md-12">
+                        <div class="card-footer">
+                            <p class="card-text">
+                                @if (true)
+                                {
+                                    <a asp-controller="CarAccessories" asp-action="Edit" class='btn btn-outline-primary' 
+                                    asp-route-id="@Model.CarAccessories.Id"><i class="bi bi-pencil-square"></i>Edit</a>
+                                }
+                                     
+                                @if (true)
+                                {
+                                    @*<form asp-controller="CarAccessories" asp-action="Details" method="post">
+                                    <div asp-validation-summary="All">
+                                    </div>*@
+                                        
+                                   @* </form>*@
+                                   @* <form method="post"
+                                    asp-controller="CarAccessories" asp-action="Details" class="btn btn-success text-white" 
+                                    asp-route-id="@Model.CarAccessories.Id" 
+                                    asp-route-quantity="@Model.Quantity"><i class="bi bi-cart-plus"></i>In den Einkaufswagen</form>  *@
+
+                                    @*<a asp-controller="ShoppingCart" asp-action="AddItemToShoppingCart" class="btn btn-success text-white" 
+                                    asp-route-id="@Model.CarAccessories.Id" 
+                                    asp-route-quantity="@Model.Quantity"><i class="bi bi-cart-plus"></i>In den Einkaufswagen</a>
+
+                                     <a method="post" asp-controller="CarAccessories" asp-action="Details" class="btn btn-success text-white" 
+                                    asp-route-id="@Model.CarAccessories.Id" 
+                                    asp-route-quantity="@Model.Quantity"><i class="bi bi-cart-plus"></i>In den Einkaufswagen</a>*@
+                                }
+
+                                <form method="post" asp-action="Delete" asp-route-id="@Model.CarAccessories.Id">
+                                    
+                                    @*<button type="submit" class="btn btn-danger">Delete</button>*@
+
+                                    @*EN*@
+                                    @*The span elements that surround the Delete, Yes and No buttons will be dynamically 
+                                    generated for every user on the list page.
+                                    If you have more than one user on the page there will be more than one span element
+                                    To ensure these span elements have unique ID's we are appending User.Id which 
+                                    is a Guid and guaranteed to be unique*@
+                                    @*GE*@
+                                    @*Die span-Elemente, die die Schaltflächen „Löschen“, „Ja“ und „Nein“ umgeben, sind dynamisch
+                                    für jeden Benutzer auf der Listenseite generiert.
+                                    Wenn Sie mehr als einen Benutzer auf der Seite haben, gibt es mehr als ein span-Element
+                                    Um sicherzustellen, dass diese Span-Elemente eindeutige IDs haben, hängen wir User.Id which an
+                                    ist ein Guid und garantiert einzigartig*@
+                                    @*HU*@
+                                    @*A Törlés, Igen és Nem gombokat körülvevő span elemek dinamikusak lesznek
+                                    a listaoldal minden felhasználója számára generálva.
+                                    Ha egynél több felhasználója van az oldalon, akkor egynél több span elem lesz
+                                    Annak érdekében, hogy ezek a span elemek egyedi azonosítóval rendelkezzenek, hozzáfűzzük a User.Id-t, amelyik
+                                    egy útmutató, és garantáltan egyedi*@
+
+                                    @*<span id="confirmDeleteSpan_@carAccessories.EncryptedId" style="display:none">
+                                        <span>Are you sure you want to delete?</span>
+                                        <button type="submit" class="btn btn-danger">Yes</button>
+                                        <a href="#" class="btn btn-primary"
+                                            onclick="confirmDelete('@carAccessories.EncryptedId', false)">No</a>
+                                    </span>
+
+                                    <span id="deleteSpan_@carAccessories.EncryptedId">
+                                        <a href="#" class="btn btn-danger text-white"
+                                            onclick="confirmDelete('@carAccessories.EncryptedId', true)"><i class="bi bi-trash"></i>Delete</a>
+                                    </span>*@
+                                    <span id="confirmDeleteSpan_@Model.CarAccessories.Id" style="display:none">
+                                        <span>Are you sure you want to delete?</span>
+                                        <button type="submit" class="btn btn-danger">Yes</button>
+                                        <a href="#" class="btn btn-primary"
+                                            onclick="confirmDelete('@Model.CarAccessories.Id', false)">No</a>
+                                    </span>
+
+                                    <span id="deleteSpan_@Model.CarAccessories.Id">
+                                        <a href="#" class="btn btn-danger text-white"
+                                            onclick="confirmDelete('@Model.CarAccessories.Id', true)"><i class="bi bi-trash"></i>Delete</a>
+                                    </span>
+                                </form>  
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </body>    
+</html>

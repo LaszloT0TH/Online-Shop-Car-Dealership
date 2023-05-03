@@ -1,0 +1,309 @@
+﻿@model List<ShoppingCartModel>
+
+@{
+    ViewData["Title"] = "Shopping cart";
+    double Total = 0;
+}
+
+<div class="row">
+    <div class="col-md-8 offset-2">
+        @if(GlobalData.ShoppingCartStatus == "Im Einkaufswagen")
+        {
+         <div class="text-center"><h2>Einkaufswagen</h2></div>        
+        }
+        @if(GlobalData.ShoppingCartStatus == "Für später gespeichert")
+        {
+         <div class="text-center"><h2>Für später gespeichert</h2></div>        
+        }
+        @if(GlobalData.ShoppingCartStatus == "Bestellt")
+        {
+         <div class="text-center"><h2>Bestellt</h2></div>        
+        }
+        @if(GlobalData.ShoppingCartStatus == "Unterwegs")
+        {
+         <div class="text-center"><h2>Unterwegs</h2></div>        
+        }
+        @if(GlobalData.ShoppingCartStatus == "Zugestellt")
+        {
+         <div class="text-center"><h2>Zugestellt</h2></div>        
+        } 
+        
+        @if(GlobalData.ShoppingCartStatus != "Im Einkaufswagen")
+        {
+        <a class="btn btn-primary" asp-controller="ShoppingCart" asp-action="ShoppingCartView">Einkaufswagen Liste</a>            
+        }
+        @if(GlobalData.ShoppingCartStatus != "Für später gespeichert")
+        {
+        <a class="btn btn-primary" asp-controller="ShoppingCart" asp-action="SaveForLaterView">Für später gespeichert Liste</a>
+        }
+        @if(GlobalData.ShoppingCartStatus != "Bestellt")
+        {
+        <a class="btn btn-primary" asp-controller="ShoppingCart" asp-action="OrderedView">Bestellt Liste</a>
+        }
+        @if(GlobalData.ShoppingCartStatus != "Unterwegs")
+        {
+        <a class="btn btn-primary" asp-controller="ShoppingCart" asp-action="InTransitView">Unterwegs Liste</a>
+        }
+        @if(GlobalData.ShoppingCartStatus != "Zugestellt")
+        {
+        <a class="btn btn-primary" asp-controller="ShoppingCart" asp-action="DeliveredView">Zugestellt Liste</a>
+        }
+        <table class="table">
+            <thead>
+                <tr>
+                    @if (true)
+                    {
+                        <th>Einkaufswagen ID</th>
+                    }
+                    <th>Artikel</th>
+                    <th>Gesamt</th>
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+                        <th>Benutzer</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var shopingCart in Model)
+                {
+                    var findResult = shopingCart.ShoppingCartItem.Find(st => st.ShoppingCartStatus.ShoppingCartStatusName == GlobalData.ShoppingCartStatus);
+                    bool ShoppingCartItemFindByStatusNameResult = false;
+                    if (findResult != null) ShoppingCartItemFindByStatusNameResult = true;
+
+                    @if (shopingCart.ShoppingCartItem.Count != 0 && ShoppingCartItemFindByStatusNameResult)
+                    {
+                        <tr>
+                            @if (true)
+                            {
+                                <td class="align-middle">@shopingCart.Id</td>
+                            }
+                            <td class="align-middle">
+                                <ul style="list-style-type:none">
+                                         
+                                @foreach (var shopingCartItem in shopingCart.ShoppingCartItem)
+                                {
+                                    @if (shopingCartItem.ShoppingCartStatus.ShoppingCartStatusName == GlobalData.ShoppingCartStatus)
+                                    {
+                                        <div class="col-md-8" role="alert">
+                                                <span class="badge bg-success">
+                                                    @{
+                                                        var photoPath = "";
+                                                        @if (@shopingCartItem.CarAccessories != null)
+                                                    {
+                                                        photoPath = "~/images/" + (shopingCartItem.CarAccessories.PhotoPath ?? "noimage.jpg");
+                                                    }
+                                                    else
+                                                    {
+                                                        photoPath = "~/images/" + (shopingCartItem.Cars.PhotoPath ?? "noimage.jpg");
+                                                    }
+                                                }
+                                            <div class="col-md-4">
+                                                <img class="card-img-top" src="@photoPath" asp-append-version="true"/>
+                                            </div>
+                                            @if (true)
+                                            {
+                                                <p class="card-text">Einkaufswagen Artikel ID : @shopingCartItem.Id</p> 
+                                            }
+                                            @if (@shopingCartItem.CarAccessories != null)
+                                            {
+                                                <p class="card-text">Produkt : @shopingCartItem.CarAccessories.ProductName</p>
+                                            }
+                                            @if (@shopingCartItem.Cars != null)
+                                            {
+                                                <p class="card-text">Auto Modell : @shopingCartItem.Cars.Model</p>
+                                            }
+                                            <p class="card-text">Menge : @shopingCartItem.Quantity</p>
+                                            @if (@shopingCartItem.CarAccessories != null)
+                                            {
+                                                <p class="card-text">Versanddatum : @shopingCartItem.ShippedDate</p>
+                                            }
+                                            @if (true)
+                                            {
+                                                <p class="card-text">Netto Verkaufsbetrag : @shopingCartItem.SaleAmount.ToString("c")</p>
+                                            }
+                                            <p class="card-text">Steuerprozentsatz : @((shopingCartItem.TaxPercentageValue/100).ToString("P"))</p>
+                                            <p class="card-text">Brutto Verkaufsbetrag : @shopingCartItem.GrossSaleAmount.ToString("c")</p>
+                                            <p class="card-text">Zwischensumme : @((shopingCartItem.GrossSaleAmount*shopingCartItem.Quantity).ToString("c"))</p>
+                                            @{
+                                                Total += (shopingCartItem.GrossSaleAmount * shopingCartItem.Quantity);
+                                            }
+                                            <p class="card-text">Statusname des Auftrag : @shopingCartItem.OrderStatus.OrderStatusName</p>
+                                            <p class="card-text">Statusname des Einkaufswagens : @shopingCartItem.ShoppingCartStatus.ShoppingCartStatusName</p>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            @if (@shopingCartItem.CarAccessories != null)
+                                            {
+                                                @if (GlobalData.ShoppingCartStatus != "Bestellt" 
+                                                || GlobalData.ShoppingCartStatus != "Unterwegs" 
+                                                || GlobalData.ShoppingCartStatus != "Zugestellt")
+                                                {
+                                                    <a class="btn btn-danger" asp-controller="ShoppingCart" asp-action="RemoveItemFromShoppingCart"
+                                                        asp-route-id="@shopingCartItem.Id">
+                                                        <i class="bi bi-cart-dash"></i> Löschen
+                                                    </a>       
+                                                }
+                                                @if (GlobalData.ShoppingCartStatus == "Im Einkaufswagen" || GlobalData.ShoppingCartStatus == "Für später gespeichert")
+                                                {
+                                                    <a class="btn btn-outline-primary" asp-controller="ShoppingCart" asp-action="EditQuantityFromItemShoppingCart"
+                                                        asp-route-id="@shopingCartItem.Id">
+                                                        <i class="bi bi-pencil-square"></i> Menge ändern
+                                                    </a>        
+                                                }
+                                                @if (GlobalData.ShoppingCartStatus != "Im Einkaufswagen")
+                                                {
+                                                     <a class="btn btn-primary" asp-controller="ShoppingCart" asp-action="AddToShoppingCart"
+                                                        asp-route-id="@shopingCartItem.Id">Zum Einkaufswagen
+                                                    </a>
+                                                }
+                                                @if (GlobalData.ShoppingCartStatus != "Für später gespeichert")
+                                                {
+                                                     <a class="btn btn-primary" asp-controller="ShoppingCart" asp-action="SaveForLaterFromShoppingCart"
+                                                        asp-route-id="@shopingCartItem.Id">Für später speichern
+                                                    </a>
+                                                }
+                                            }
+                                            @if (@shopingCartItem.Cars != null)
+                                            {
+                                                @if (GlobalData.ShoppingCartStatus != "Bestellt" 
+                                                || GlobalData.ShoppingCartStatus != "Unterwegs" 
+                                                || GlobalData.ShoppingCartStatus != "Zugestellt")
+                                                {
+                                                     <a class="btn btn-danger" asp-controller="ShoppingCart" asp-action="RemoveItemFromShoppingCart"
+                                                        asp-route-id="@shopingCartItem.Id">
+                                                        <i class="bi bi-cart-dash"></i> Löschen
+                                                    </a>       
+                                                }
+                                                @if (GlobalData.ShoppingCartStatus != "Im Einkaufswagen")
+                                                {
+                                                     <a class="btn btn-primary" asp-controller="ShoppingCart" asp-action="AddToShoppingCart"
+                                                        asp-route-id="@shopingCartItem.Id">Zum Einkaufswagen
+                                                    </a>
+                                                }
+                                                @if (GlobalData.ShoppingCartStatus != "Für später gespeichert")
+                                                {
+                                                     <a class="btn btn-primary" asp-controller="ShoppingCart" asp-action="SaveForLaterFromShoppingCart"
+                                                        asp-route-id="@shopingCartItem.Id">Für später speichern
+                                                    </a>
+                                                }
+                                            }
+                                        </div>
+                                    }
+                                }
+                                
+                                </ul>
+                            </td> 
+                            <td class="align-middle">
+                                @shopingCart.ShoppingCartItem.Select(m => m.GrossSaleAmount*m.Quantity).Sum().ToString("c")
+                            </td>
+                            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                            {
+                                <td class="align-middle"> @shopingCart.User.FirstName </td>
+                            }
+
+                        </tr>
+                    }                   
+                }
+ 
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2"></td>
+                    <td><b>Gesamt:</b></td>
+                    <td>
+                        @Total.ToString("c")
+                    </td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="text-right">
+            <div class="btn-group">
+                <a class="btn btn-outline-primary" asp-controller="Order" asp-action="CompleteOrder">
+                        Bestellen
+                    </a>
+                <div id="paypal-btn"></div>
+                <span style="padding:5px"></span>
+                <a class="btn btn-outline-success" asp-controller="CarAccessories" asp-action="Index">
+                    Weitere Autozubehör hinzufügen
+                </a>
+                @if (true)
+                {
+                    <a class="btn btn-outline-success" asp-controller="CarAccessories" asp-action="Index">
+                        Weitere Auto hinzufügen
+                    </a>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts{
+
+    <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+    <script>
+
+        let _total = @Total;
+
+        paypal.Button.render({
+            // EN
+            //Configure environment
+            // GE
+            //Umgebung konfigurieren
+            // HU
+            //Környezet konfigurálása
+            env: 'sandbox',
+            client: {
+                sandbox: 'AcKRtgL4i68EZ2ZYuYUx3ilihAg2YhL5dtF_m19A8MjBWVOn6ewNS4M_uV8gA3xi98zTcUq38gUHbVFx'
+            },
+
+            // EN
+            //Customize button
+            // GE
+            //Schaltfläche anpassen
+            // HU
+            //Testreszabás gomb
+            locale: 'en_US',
+            style: {
+                size: 'small',
+                color: 'gold',
+                shape: 'pill'
+            },
+            commit: true,
+
+            // EN
+            //Set up a payment
+            // GE
+            //Eine Zahlung einrichten
+            // HU
+            //Fizetés beállítása
+            payment: function (data, actions) {
+                return actions.payment.create({
+                    transactions: [{
+                        amount: {
+                            total: _total,
+                            currency: 'USD'
+                        }
+                    }]
+                });
+            },
+
+            // EN
+            //Execute the payment
+            // GE
+            //Zahlung ausführen
+            // HU
+            //A fizetés végrehajtása
+            onAuthorize: function (data, actions) {
+                return actions.payment.execute().then(function () {
+                    var url = '@Url.Action("CompleteOrder", "Orders", new { })';
+                    window.location.href = url;
+                });
+            }
+
+        }, '#paypal-btn')
+    </script>
+}

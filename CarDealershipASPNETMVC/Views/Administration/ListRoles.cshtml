@@ -1,0 +1,94 @@
+﻿@model IEnumerable<IdentityRole>
+
+@{
+    ViewBag.Title = "All Roles";
+}
+
+<h1>All Roles</h1>
+@*EN*@
+@*Checking the view to see if it has an element to display Model.Any()*@
+@*GE*@
+@*Überprüfen der Ansicht, ob sie ein Element zum Anzeigen von Model.Any() hat*@
+@*HU*@
+@*A nézet vizsgálata, hogy van-e megjelenítendő elem benne Model.Any()*@
+@if (Model.Any())
+{
+    <a class="btn btn-primary mb-3" style="width:auto" asp-action="CreateRole"
+       asp-controller="Administration">Add new role</a>
+
+    foreach (var role in Model)
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                Role Id : @role.Id
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">@role.Name</h5>
+            </div>
+            @*EN*@
+            @*Delete button type is set to submit
+            It is placed inside the form element and the method attribute is set to post
+            So when the Delete button is clicked a POST request is issued to DeleteRole() action passing it the ID of the role to delete
+            The span elements that surround the Delete, Yes and No buttons will be dynamically generated for every role on the list page.
+            If you have more than one role on the page there will be more than one span element
+            To ensure these span elements have unique ID's we are appending Role.Id which is a Guid and guaranteed to be unique*@
+            @*DE*@
+            @*Schaltflächentyp „Löschen“ ist auf „Senden“ eingestellt
+            Es wird innerhalb des form-Elements platziert und das method-Attribut wird auf post gesetzt
+            Wenn also auf die Schaltfläche Löschen geklickt wird, wird eine POST-Anforderung an die Aktion DeleteRole() ausgegeben, die ihr die ID der zu löschenden Rolle übergibt
+            Die span-Elemente, die die Schaltflächen „Löschen“, „Ja“ und „Nein“ umgeben, werden für jede Rolle auf der Listenseite dynamisch generiert.
+            Wenn Sie mehr als eine Rolle auf der Seite haben, gibt es mehr als ein span-Element
+            Um sicherzustellen, dass diese Span-Elemente eindeutige IDs haben, hängen wir Role.Id an, die eine Guid ist und garantiert eindeutig ist*@
+            @*HU*@
+            @*A Törlés gomb típusa elküldésre van beállítva
+            A form elem belsejébe kerül, és a method attribútum bejegyzésre van állítva
+            Tehát a Törlés gombra kattintva egy POST kérés érkezik a DeleteRole() művelethez, 
+            amely átadja neki a törölni kívánt szerep azonosítóját
+            A Törlés, Igen és Nem gombokat körülvevő span elemek dinamikusan generálódnak a listaoldal minden szerepéhez.
+            Ha egynél több szerepe van az oldalon, akkor egynél több span elem lesz
+            Annak érdekében, hogy ezek a span elemek egyedi azonosítóval rendelkezzenek, hozzáfűzzük a Role.Id azonosítót, 
+            amely útmutató és garantáltan egyedi*@
+            <div class="card-footer">              
+                <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post">
+                     <a asp-controller="Administration" asp-action="EditRole"
+                       asp-route-id="@role.Id" class="btn btn-danger">
+                        Edit
+                    </a>
+                    
+                    <span id="confirmDeleteSpan_@role.Id" style="display:none">
+                        <span>Are you sure you want to delete?</span>
+                        <button type="submit" class="btn btn-danger">Yes</button>
+                        <a href="#" class="btn btn-primary"
+                            onclick="confirmDelete('@role.Id', false)">No</a>
+                    </span>
+
+                    <span id="deleteSpan_@role.Id">
+                        <a href="#" class="btn btn-danger"
+                            onclick="confirmDelete('@role.Id', true)">Delete</a>
+                    </span>
+                </form>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="card">
+        <div class="card-header">
+            No roles created yet
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">
+                Use the button below to create a role
+            </h5>
+            <a class="btn btn-primary" style="width:auto"
+               asp-controller="Administration" asp-action="CreateRole">
+                Create Role
+            </a>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script src="~/js/site.js"></script>
+}
